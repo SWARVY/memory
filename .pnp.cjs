@@ -35,13 +35,18 @@ const RAW_RUNTIME_STATE =
           ["@types/node", "npm:20.17.30"],\
           ["@types/react", "npm:19.1.0"],\
           ["@types/react-dom", "virtual:7b6aa75b6f348cecbf05ca1a4c10536e3d4ff6b8c013958e8532464e0c719c7e5fba925b7a63834b8e828b5c98ce33c4cf90c34f29e580de82e6c9c60daa7db7#npm:19.1.1"],\
+          ["class-variance-authority", "npm:0.7.1"],\
+          ["clsx", "npm:2.1.1"],\
           ["imaginary-temp", "workspace:."],\
           ["isbot", "npm:5.1.25"],\
+          ["lucide-react", "virtual:7b6aa75b6f348cecbf05ca1a4c10536e3d4ff6b8c013958e8532464e0c719c7e5fba925b7a63834b8e828b5c98ce33c4cf90c34f29e580de82e6c9c60daa7db7#npm:0.487.0"],\
           ["react", "npm:19.1.0"],\
           ["react-dom", "virtual:7b6aa75b6f348cecbf05ca1a4c10536e3d4ff6b8c013958e8532464e0c719c7e5fba925b7a63834b8e828b5c98ce33c4cf90c34f29e580de82e6c9c60daa7db7#npm:19.1.0"],\
           ["react-router", "virtual:7b6aa75b6f348cecbf05ca1a4c10536e3d4ff6b8c013958e8532464e0c719c7e5fba925b7a63834b8e828b5c98ce33c4cf90c34f29e580de82e6c9c60daa7db7#npm:7.5.0"],\
           ["react-router-devtools", "virtual:7b6aa75b6f348cecbf05ca1a4c10536e3d4ff6b8c013958e8532464e0c719c7e5fba925b7a63834b8e828b5c98ce33c4cf90c34f29e580de82e6c9c60daa7db7#npm:1.1.9"],\
+          ["tailwind-merge", "npm:3.1.0"],\
           ["tailwindcss", "npm:4.1.3"],\
+          ["tw-animate-css", "npm:1.2.5"],\
           ["typescript", "patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"],\
           ["vite", "virtual:7b6aa75b6f348cecbf05ca1a4c10536e3d4ff6b8c013958e8532464e0c719c7e5fba925b7a63834b8e828b5c98ce33c4cf90c34f29e580de82e6c9c60daa7db7#npm:5.4.17"],\
           ["vite-tsconfig-paths", "virtual:7b6aa75b6f348cecbf05ca1a4c10536e3d4ff6b8c013958e8532464e0c719c7e5fba925b7a63834b8e828b5c98ce33c4cf90c34f29e580de82e6c9c60daa7db7#npm:5.1.4"]\
@@ -3027,6 +3032,16 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["class-variance-authority", [\
+      ["npm:0.7.1", {\
+        "packageLocation": "../../.yarn/berry/cache/class-variance-authority-npm-0.7.1-74a7beaf7c-10c0.zip/node_modules/class-variance-authority/",\
+        "packageDependencies": [\
+          ["class-variance-authority", "npm:0.7.1"],\
+          ["clsx", "npm:2.1.1"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["classnames", [\
       ["npm:2.5.1", {\
         "packageLocation": "../../.yarn/berry/cache/classnames-npm-2.5.1-c7273f3423-10c0.zip/node_modules/classnames/",\
@@ -4229,13 +4244,18 @@ const RAW_RUNTIME_STATE =
           ["@types/node", "npm:20.17.30"],\
           ["@types/react", "npm:19.1.0"],\
           ["@types/react-dom", "virtual:7b6aa75b6f348cecbf05ca1a4c10536e3d4ff6b8c013958e8532464e0c719c7e5fba925b7a63834b8e828b5c98ce33c4cf90c34f29e580de82e6c9c60daa7db7#npm:19.1.1"],\
+          ["class-variance-authority", "npm:0.7.1"],\
+          ["clsx", "npm:2.1.1"],\
           ["imaginary-temp", "workspace:."],\
           ["isbot", "npm:5.1.25"],\
+          ["lucide-react", "virtual:7b6aa75b6f348cecbf05ca1a4c10536e3d4ff6b8c013958e8532464e0c719c7e5fba925b7a63834b8e828b5c98ce33c4cf90c34f29e580de82e6c9c60daa7db7#npm:0.487.0"],\
           ["react", "npm:19.1.0"],\
           ["react-dom", "virtual:7b6aa75b6f348cecbf05ca1a4c10536e3d4ff6b8c013958e8532464e0c719c7e5fba925b7a63834b8e828b5c98ce33c4cf90c34f29e580de82e6c9c60daa7db7#npm:19.1.0"],\
           ["react-router", "virtual:7b6aa75b6f348cecbf05ca1a4c10536e3d4ff6b8c013958e8532464e0c719c7e5fba925b7a63834b8e828b5c98ce33c4cf90c34f29e580de82e6c9c60daa7db7#npm:7.5.0"],\
           ["react-router-devtools", "virtual:7b6aa75b6f348cecbf05ca1a4c10536e3d4ff6b8c013958e8532464e0c719c7e5fba925b7a63834b8e828b5c98ce33c4cf90c34f29e580de82e6c9c60daa7db7#npm:1.1.9"],\
+          ["tailwind-merge", "npm:3.1.0"],\
           ["tailwindcss", "npm:4.1.3"],\
+          ["tw-animate-css", "npm:1.2.5"],\
           ["typescript", "patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"],\
           ["vite", "virtual:7b6aa75b6f348cecbf05ca1a4c10536e3d4ff6b8c013958e8532464e0c719c7e5fba925b7a63834b8e828b5c98ce33c4cf90c34f29e580de82e6c9c60daa7db7#npm:5.4.17"],\
           ["vite-tsconfig-paths", "virtual:7b6aa75b6f348cecbf05ca1a4c10536e3d4ff6b8c013958e8532464e0c719c7e5fba925b7a63834b8e828b5c98ce33c4cf90c34f29e580de82e6c9c60daa7db7#npm:5.1.4"]\
@@ -4634,6 +4654,28 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "../../.yarn/berry/cache/lru-cache-npm-7.18.3-e68be5b11c-10c0.zip/node_modules/lru-cache/",\
         "packageDependencies": [\
           ["lru-cache", "npm:7.18.3"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["lucide-react", [\
+      ["npm:0.487.0", {\
+        "packageLocation": "../../.yarn/berry/cache/lucide-react-npm-0.487.0-2f5dab139e-10c0.zip/node_modules/lucide-react/",\
+        "packageDependencies": [\
+          ["lucide-react", "npm:0.487.0"]\
+        ],\
+        "linkType": "SOFT"\
+      }],\
+      ["virtual:7b6aa75b6f348cecbf05ca1a4c10536e3d4ff6b8c013958e8532464e0c719c7e5fba925b7a63834b8e828b5c98ce33c4cf90c34f29e580de82e6c9c60daa7db7#npm:0.487.0", {\
+        "packageLocation": "./.yarn/__virtual__/lucide-react-virtual-fcfc0c2f17/3/.yarn/berry/cache/lucide-react-npm-0.487.0-2f5dab139e-10c0.zip/node_modules/lucide-react/",\
+        "packageDependencies": [\
+          ["@types/react", "npm:19.1.0"],\
+          ["lucide-react", "virtual:7b6aa75b6f348cecbf05ca1a4c10536e3d4ff6b8c013958e8532464e0c719c7e5fba925b7a63834b8e828b5c98ce33c4cf90c34f29e580de82e6c9c60daa7db7#npm:0.487.0"],\
+          ["react", "npm:19.1.0"]\
+        ],\
+        "packagePeers": [\
+          "@types/react",\
+          "react"\
         ],\
         "linkType": "HARD"\
       }]\
@@ -6171,6 +6213,15 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["tailwind-merge", [\
+      ["npm:3.1.0", {\
+        "packageLocation": "../../.yarn/berry/cache/tailwind-merge-npm-3.1.0-fbe103b6e8-10c0.zip/node_modules/tailwind-merge/",\
+        "packageDependencies": [\
+          ["tailwind-merge", "npm:3.1.0"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["tailwindcss", [\
       ["npm:4.1.3", {\
         "packageLocation": "../../.yarn/berry/cache/tailwindcss-npm-4.1.3-6f4452dedf-10c0.zip/node_modules/tailwindcss/",\
@@ -6260,6 +6311,15 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "../../.yarn/berry/cache/turbo-stream-npm-2.4.0-e0cec53097-10c0.zip/node_modules/turbo-stream/",\
         "packageDependencies": [\
           ["turbo-stream", "npm:2.4.0"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["tw-animate-css", [\
+      ["npm:1.2.5", {\
+        "packageLocation": "../../.yarn/berry/cache/tw-animate-css-npm-1.2.5-804f3268e8-10c0.zip/node_modules/tw-animate-css/",\
+        "packageDependencies": [\
+          ["tw-animate-css", "npm:1.2.5"]\
         ],\
         "linkType": "HARD"\
       }]\
