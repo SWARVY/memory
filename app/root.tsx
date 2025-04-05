@@ -9,6 +9,9 @@ import {
 
 import type { Route } from './+types/root';
 import './app.css';
+import { Navigator } from './widgets/navigator';
+import { Aside } from './widgets/aside';
+import { cn } from './shared/lib/utils';
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -25,15 +28,31 @@ export const links: Route.LinksFunction = () => [
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang='en'>
+    <html lang="ko">
       <head>
-        <meta charSet='utf-8' />
-        <meta name='viewport' content='width=device-width, initial-scale=1' />
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
       </head>
       <body>
-        {children}
+        <div className="flex flex-col items-center justify-start h-dvh w-screen">
+          <Navigator />
+          <main
+            className={cn(
+              'flex gap-4 flex-1 max-w-5xl w-full -translate-y-16',
+              'flex-col-reverse lg:flex-row',
+            )}
+          >
+            <div className="w-full lg:w-64 shrink-0">
+              <Aside />
+            </div>
+            <div className="flex-1">{children}</div>
+          </main>
+          <footer className="py-6 text-center text-gray-600">
+            © 2024 Congenial Memory. All rights reserved.
+          </footer>
+        </div>
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -62,11 +81,11 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className='pt-16 p-4 container mx-auto'>
+    <main className="pt-16 p-4 container mx-auto">
       <h1>{message}</h1>
       <p>{details}</p>
       {stack && (
-        <pre className='w-full p-4 overflow-x-auto'>
+        <pre className="w-full p-4 overflow-x-auto">
           <code>{stack}</code>
         </pre>
       )}
