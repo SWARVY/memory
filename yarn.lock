@@ -1569,6 +1569,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-router/fs-routes@npm:^7.5.0":
+  version: 7.5.0
+  resolution: "@react-router/fs-routes@npm:7.5.0"
+  dependencies:
+    minimatch: "npm:^9.0.0"
+  peerDependencies:
+    "@react-router/dev": ^7.5.0
+    typescript: ^5.1.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10c0/4a2e5b8b3c78177d1a368bb696578b6d8257b29096990f82ff75dd50d44e57b35d682a83d8acb5fa979d556770feba675a81d9a31bd933b3e8f4b45e5871efd8
+  languageName: node
+  linkType: hard
+
 "@react-router/node@npm:7.5.0, @react-router/node@npm:^7.5.0":
   version: 7.5.0
   resolution: "@react-router/node@npm:7.5.0"
@@ -3353,6 +3368,7 @@ __metadata:
   resolution: "imaginary-temp@workspace:."
   dependencies:
     "@react-router/dev": "npm:^7.5.0"
+    "@react-router/fs-routes": "npm:^7.5.0"
     "@react-router/node": "npm:^7.5.0"
     "@react-router/serve": "npm:^7.5.0"
     "@tailwindcss/vite": "npm:^4.0.0"
@@ -3837,7 +3853,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^9.0.4":
+"minimatch@npm:^9.0.0, minimatch@npm:^9.0.4":
   version: 9.0.5
   resolution: "minimatch@npm:9.0.5"
   dependencies:
