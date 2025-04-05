@@ -29,10 +29,10 @@ export default function Navigator() {
           </Button>
         </div>
         <div className="flex gap-x-2">
-          <Button type="button" variant="ghost">
+          <Button type="button" variant="ghost" aria-label="lock">
             <LockIcon />
           </Button>
-          <Button type="button" variant="ghost">
+          <Button type="button" variant="ghost" aria-label="toggle theme">
             <SunIcon />
           </Button>
         </div>
