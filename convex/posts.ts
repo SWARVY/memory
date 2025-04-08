@@ -1,6 +1,6 @@
 import { zid } from 'convex-helpers/server/zod';
 
-import { PostSchema, PostTypeSchema } from './schema';
+import { PostSchema } from './schema';
 import { zMutation, zQuery } from '~/shared/lib/zod-convex';
 
 export const createPost = zMutation({
@@ -25,12 +25,8 @@ export const deletePost = zMutation({
 });
 
 export const getPosts = zQuery({
-  args: { type: PostTypeSchema },
-  handler: async (ctx, args) => {
-    const posts = await ctx.db
-      .query('post')
-      .filter((q) => q.eq(q.field('type'), args.type))
-      .collect();
+  handler: async (ctx) => {
+    const posts = await ctx.db.query('post').collect();
     return posts;
   },
 });

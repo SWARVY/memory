@@ -1,7 +1,7 @@
 export default {
   providers: [
     {
-      domain: 'https://graceful-narwhal-106.convex.cloud',
+      domain: 'https://reliable-hyena-347.convex.cloud',
       applicationID: 'convex',
     },
   ],
