@@ -3,6 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { api } from 'convex/_generated/api';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
+import buildPath from '~/shared/lib/build-path';
 
 export default function useCreatePost() {
   const navigate = useNavigate();
@@ -12,10 +13,7 @@ export default function useCreatePost() {
     mutationFn: useConvexMutation(api.posts.createPost),
     onSuccess: () => {
       toast.success('포스트가 등록되었어요 🚀');
-      //   navigator({
-      //     to: '/posts/list/$type',
-      //     params: { type: 'POST' },
-      //   });
+      navigate(buildPath('/'));
     },
     onError: () => {
       toast.error('포스트 등록에 실패했어요 😢');
