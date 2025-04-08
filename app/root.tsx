@@ -5,13 +5,22 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
+  useLocation,
 } from 'react-router';
 
 import type { Route } from './+types/root';
 import './app.css';
 import { Navigator } from './widgets/navigator';
 import { Aside } from './widgets/aside';
-import { cn } from './shared/lib/utils';
+import { useState } from 'react';
+import { ConvexProvider, ConvexReactClient } from 'convex/react';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ConvexQueryClient } from '@convex-dev/react-query';
+import { Toaster } from './shared/ui/sonner';
+import { MainLayout } from './shared/ui/main-layout';
+import { Footer } from './widgets/footer';
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -26,7 +35,38 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
+const HIDE_ASIDE_PATHS = ['/new-post'] as const;
+
+export async function loader() {
+  const CONVEX_URL = process.env['CONVEX_URL']!;
+  return { ENV: { CONVEX_URL } };
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
+  const { ENV } = useLoaderData<typeof loader>();
+  const [convexClient] = useState(() => new ConvexReactClient(ENV.CONVEX_URL));
+  const [convexQueryClient] = useState(
+    () => new ConvexQueryClient(convexClient),
+  );
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            queryKeyHashFn: convexQueryClient.hashFn(),
+            queryFn: convexQueryClient.queryFn(),
+            staleTime: 1000 * 60 * 60,
+            refetchOnWindowFocus: false,
+          },
+        },
+      }),
+  );
+
+  const location = useLocation();
+  const shouldShowAside = !HIDE_ASIDE_PATHS.some((path) =>
+    location.pathname.startsWith(path),
+  );
+
   return (
     <html lang="ko">
       <head>
@@ -36,25 +76,22 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <div className="flex flex-col items-center justify-start h-dvh w-screen">
-          <Navigator />
-          <main
-            className={cn(
-              'flex gap-4 flex-1 max-w-5xl w-full -translate-y-16',
-              'flex-col-reverse lg:flex-row',
-            )}
-          >
-            <div className="w-full lg:w-64 shrink-0">
-              <Aside />
-            </div>
-            <div className="flex-1">{children}</div>
-          </main>
-          <footer className="py-6 text-center text-gray-600">
-            © 2024 Congenial Memory. All rights reserved.
-          </footer>
-        </div>
-        <ScrollRestoration />
-        <Scripts />
+        <QueryClientProvider client={queryClient}>
+          <ConvexProvider client={convexClient}>
+            <MainLayout
+              navigator={<Navigator />}
+              aside={<Aside />}
+              footer={<Footer />}
+              showAside={shouldShowAside}
+            >
+              {children}
+            </MainLayout>
+            <ScrollRestoration />
+            <Scripts />
+            <Toaster />
+          </ConvexProvider>
+          <ReactQueryDevtools buttonPosition="bottom-left" />
+        </QueryClientProvider>
       </body>
     </html>
   );
