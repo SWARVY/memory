@@ -10,7 +10,6 @@ const config = {
   tailwindConfig: './tailwind.config.ts',
   tailwindFunctions: ['cva'],
   plugins: [
-    // '@trivago/prettier-plugin-sort-imports',
     // 'prettier-plugin-tailwindcss',
   ],
 };
