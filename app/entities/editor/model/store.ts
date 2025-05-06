@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import type { EditorStore } from './types';
+
+import type EditorStore from './types';
 
 const useEditorStore = create<EditorStore>((set) => ({
   editor: null,
