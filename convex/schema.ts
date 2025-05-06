@@ -2,21 +2,26 @@ import { zid, zodToConvex } from 'convex-helpers/server/zod';
 import { defineSchema, defineTable } from 'convex/server';
 import { z } from 'zod';
 
-export const PostTypeSchema = z.union([
-  z.literal('POST'),
-  z.literal('DEBUG'),
-  z.literal('SNIPPET'),
-]);
+export const CategorySchema = z.enum(['TECH', 'THINKING', 'ETC']);
 
-export type PostType = z.infer<typeof PostTypeSchema>;
+export type Category = z.infer<typeof CategorySchema>;
 
-export const PostSchema = z.object({
+const BasePostSchema = z.object({
   _id: zid('post').optional(),
   _creationTime: z.number().optional(),
-  type: PostTypeSchema,
   title: z.string().min(1),
-  contents: z.string(),
-  relatedPosts: z.array(z.union([z.string().url(), z.literal('')])),
+  category: CategorySchema,
+  briefContents: z.string().optional(),
+});
+
+export const PostSummarySchema = BasePostSchema.extend({
+  postId: z.string(),
+});
+
+export type PostSummary = z.infer<typeof PostSummarySchema>;
+
+export const PostSchema = BasePostSchema.extend({
+  contents: z.string().optional(),
 });
 
 export type Post = z.infer<typeof PostSchema>;
@@ -26,6 +31,7 @@ export const FileSchema = z.object({
 });
 
 export default defineSchema({
+  summary: defineTable(zodToConvex(PostSummarySchema)),
   post: defineTable(zodToConvex(PostSchema)),
   file: defineTable(zodToConvex(FileSchema)),
 });

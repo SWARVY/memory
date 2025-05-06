@@ -1,7 +1,7 @@
 export default {
   providers: [
     {
-      domain: 'https://reliable-hyena-347.convex.cloud',
+      domain: process.env.VITE_CLERK_FRONTEND_API_URL,
       applicationID: 'convex',
     },
   ],
