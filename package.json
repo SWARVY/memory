@@ -61,7 +61,7 @@
     "vite": "^5.4.11",
     "vite-tsconfig-paths": "^5.1.4"
   },
-  "packageManager": "yarn@4.8.1",
+  "packageManager": "yarn@4.9.1",
   "dependenciesMeta": {
     "@trivago/prettier-plugin-sort-imports@5.2.2": {
       "unplugged": true
