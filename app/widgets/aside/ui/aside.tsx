@@ -1,5 +1,6 @@
 import { SignInButton, SignOutButton, useAuth } from '@clerk/react-router';
 import {
+  ChevronRight,
   Github,
   Instagram,
   Lock,
@@ -10,6 +11,7 @@ import {
 } from 'lucide-react';
 import { Link, NavLink } from 'react-router';
 import buildPath from '~/shared/lib/build-path';
+import { cn } from '~/shared/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '~/shared/ui/avatar';
 import { Button } from '~/shared/ui/button';
 
@@ -98,8 +100,16 @@ function AsideNavLink({
   description: string;
 }) {
   return (
-    <li className="text-sm">
-      <NavLink to={to}>{description}</NavLink>
+    <li className="group flex items-center justify-between text-sm [&_svg]:size-4">
+      <NavLink
+        to={to}
+        className={({ isActive }) =>
+          cn('transition-all', isActive ? 'font-semibold' : '')
+        }
+      >
+        {description}
+      </NavLink>
+      <ChevronRight className="opacity-0 transition-opacity group-hover:opacity-100" />
     </li>
   );
 }

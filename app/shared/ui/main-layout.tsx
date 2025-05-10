@@ -13,7 +13,7 @@ export function MainLayout({
   showAside = true,
 }: MainLayoutProps) {
   return (
-    <div className="flex min-h-dvh w-full flex-col items-center justify-start p-10">
+    <div className="flex min-h-dvh w-full flex-col items-center justify-start p-3 xl:p-10">
       <main
         className={cn(
           'flex size-full max-w-5xl flex-1 grow gap-4',

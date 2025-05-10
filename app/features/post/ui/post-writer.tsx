@@ -9,15 +9,22 @@ import { Button } from '~/shared/ui/button';
 import { Input } from '~/shared/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '~/shared/ui/tabs';
 
-import useCreatePost from '../hooks/use-create-post';
+import type { PostWriterProps } from '../model/props';
+import useCreatePost from '../model/use-create-post';
+import useDeletePost from '../model/use-delete-post';
+import useEditPost from '../model/use-edit-post';
 
 const PostEditor = lazy(() => import('~/features/post/ui/post-editor'));
 
-export default function PostWriter() {
+export default function PostWriter({ defaultValues }: PostWriterProps) {
   const { mutateAsync: createPost } = useCreatePost();
+  const { mutateAsync: editPost } = useEditPost();
+  const { mutateAsync: deletePost } = useDeletePost();
+
+  const isEditMode = !!defaultValues;
   const editor = useEditorStore((state) => state.editor);
   const form = useForm({
-    defaultValues: {
+    defaultValues: defaultValues ?? {
       title: '',
       category: 'TECH',
     },
@@ -32,51 +39,40 @@ export default function PostWriter() {
       const contents = await editor?.blocksToFullHTML(editor?.document);
       const briefContents = editor?._tiptapEditor.getText();
 
-      console.log({ ...value, contents, briefContents });
+      // FOR DEBUG
+      // console.log({ ...value, contents, briefContents });
 
-      await createPost({ input: { ...value, contents, briefContents } });
+      if (!isEditMode) {
+        await createPost({ input: { ...value, contents, briefContents } });
+      } else {
+        await editPost({
+          input: { ...value, contents, briefContents, _id: defaultValues._id },
+        });
+      }
     },
     onSubmitInvalid: ({ value }) => {
       console.log(value);
     },
   });
 
+  const handleDeletePost = () => {
+    if (!defaultValues || !defaultValues._id) {
+      return;
+    }
+
+    deletePost({ id: defaultValues._id });
+  };
+
   return (
     <form
-      className="relative flex size-full flex-col gap-2"
+      className="relative flex size-full flex-col items-center gap-2"
       onSubmit={(e) => {
         e.preventDefault();
         form.handleSubmit();
       }}
     >
-      <div className="flex flex-col gap-y-4">
-        <form.Field
-          name="category"
-          children={(field) => (
-            <Tabs
-              defaultValue={field.state.value}
-              onValueChange={(value) => field.setValue(value as Category)}
-            >
-              <TabsList>
-                <TabsTrigger value="TECH">
-                  <PencilLine />
-                  TECH
-                </TabsTrigger>
-                <TabsTrigger value="THINKING">
-                  <Lightbulb />
-                  THINKING
-                </TabsTrigger>
-                <TabsTrigger value="ETC">
-                  <Cog />
-                  ETC
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-          )}
-        />
-      </div>
-      <div className="flex size-full flex-col gap-y-4 rounded-xl bg-white shadow-md">
-        <div className="pt-[3.375rem]">
+      <div className="w-full max-w-3xl space-y-14">
+        <div className="mt-20 flex w-full flex-col items-center justify-center gap-y-4">
           <form.Field
             name="title"
             children={(field) => (
@@ -86,14 +82,39 @@ export default function PostWriter() {
                   field.setValue(e.target.value);
                 }}
                 className={cn(
-                  'h-full rounded-none border-0 px-[3.375rem] shadow-none',
-                  'text-2xl font-bold focus-visible:ring-0 md:text-2xl',
+                  'h-full rounded-none border-0 px-[3.375rem] text-center shadow-none',
+                  'text-3xl font-bold focus-visible:ring-0 md:text-4xl',
                 )}
                 placeholder="제목을 입력해주세요"
               />
             )}
           />
+          <form.Field
+            name="category"
+            children={(field) => (
+              <Tabs
+                defaultValue={field.state.value}
+                onValueChange={(value) => field.setValue(value as Category)}
+              >
+                <TabsList>
+                  <TabsTrigger value="TECH">
+                    <PencilLine />
+                    TECH
+                  </TabsTrigger>
+                  <TabsTrigger value="THINKING">
+                    <Lightbulb />
+                    THINKING
+                  </TabsTrigger>
+                  <TabsTrigger value="ETC">
+                    <Cog />
+                    ETC
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+            )}
+          />
         </div>
+        <hr className="w-full" />
         <Suspense>
           <ClientOnly>
             <div className="size-full min-h-96 pb-[3.375rem]">
@@ -101,29 +122,32 @@ export default function PostWriter() {
             </div>
           </ClientOnly>
         </Suspense>
-      </div>
-      <div className="fixed right-8 bottom-8 flex items-center gap-x-2">
-        {/* 초기화 */}
-        <Button
-          type="button"
-          variant="destructive"
-          className="size-10 rounded-lg p-2"
-        >
-          <Trash />
-        </Button>
-        {/* 글 작성 */}
-        <form.Subscribe
-          selector={(state) => [state.canSubmit, state.isSubmitting]}
-          children={([canSubmit, isSubmitting]) => (
+        <div className="fixed right-8 bottom-8 flex items-center gap-x-2">
+          {/* 삭제 (수정 모드일 때만 가능) */}
+          {isEditMode && (
             <Button
-              type="submit"
+              type="button"
+              variant="destructive"
               className="size-10 rounded-lg p-2"
-              disabled={!canSubmit}
+              onClick={handleDeletePost}
             >
-              <Save />
+              <Trash />
             </Button>
           )}
-        />
+          {/* 글 작성 */}
+          <form.Subscribe
+            selector={(state) => [state.canSubmit, state.isSubmitting]}
+            children={([canSubmit, isSubmitting]) => (
+              <Button
+                type="submit"
+                className="size-10 rounded-lg p-2"
+                disabled={!canSubmit || isSubmitting}
+              >
+                <Save />
+              </Button>
+            )}
+          />
+        </div>
       </div>
     </form>
   );

@@ -31,7 +31,9 @@ export const FileSchema = z.object({
 });
 
 export default defineSchema({
-  summary: defineTable(zodToConvex(PostSummarySchema)),
+  summary: defineTable(zodToConvex(PostSummarySchema)).index('by_postId', [
+    'postId',
+  ]),
   post: defineTable(zodToConvex(PostSchema)),
   file: defineTable(zodToConvex(FileSchema)),
 });

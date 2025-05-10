@@ -42,6 +42,7 @@ const DEFAULT_CONTENT: PartialBlock[] = [
   },
 ];
 
+// TODO: Viewer와 유사한 뷰로 변경하는게 맞지 않을까?
 export default function Editor({
   className,
   initialContent,
