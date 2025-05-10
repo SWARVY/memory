@@ -5,4 +5,8 @@
 /.react-router/
 /build/
 
-.yarn
+.yarn/sdks
+.yarn/unplugged
+.yarn/install-state.gz
+
+.env.local

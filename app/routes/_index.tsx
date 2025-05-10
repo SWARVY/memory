@@ -1,3 +1,5 @@
+import { PostList } from '~/features/post';
+
 import type { Route } from '../+types/root';
 
 export function meta({}: Route.MetaArgs) {
@@ -8,5 +10,5 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Root() {
-  return <div>hello, this is "/"!</div>;
+  return <PostList />;
 }

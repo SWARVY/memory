@@ -1,17 +1,26 @@
+import { ClerkProvider } from '@clerk/react-router';
+import { rootAuthLoader } from '@clerk/react-router/ssr.server';
+import { ConvexQueryClient } from '@convex-dev/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { ConvexProvider, ConvexReactClient } from 'convex/react';
+import { useState } from 'react';
 import {
-  isRouteErrorResponse,
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
+  isRouteErrorResponse,
+  matchPath,
+  useLocation,
 } from 'react-router';
 
 import type { Route } from './+types/root';
 import './app.css';
-import { Navigator } from './widgets/navigator';
+import { MainLayout } from './shared/ui/main-layout';
+import { Toaster } from './shared/ui/sonner';
 import { Aside } from './widgets/aside';
-import { cn } from './shared/lib/utils';
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -26,7 +35,33 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
+const HIDE_ASIDE_PATHS = ['/new-post', '/archive/:postId'] as const;
+
+export async function loader(args: Route.LoaderArgs) {
+  return rootAuthLoader(args);
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
+  const [convexClient] = useState(
+    () => new ConvexReactClient(import.meta.env.VITE_CONVEX_URL!),
+  );
+  const [convexQueryClient] = useState(
+    () => new ConvexQueryClient(convexClient),
+  );
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            queryKeyHashFn: convexQueryClient.hashFn(),
+            queryFn: convexQueryClient.queryFn(),
+            staleTime: 1000 * 60 * 60,
+            refetchOnWindowFocus: false,
+          },
+        },
+      }),
+  );
+
   return (
     <html lang="ko">
       <head>
@@ -36,32 +71,36 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <div className="flex flex-col items-center justify-start h-dvh w-screen">
-          <Navigator />
-          <main
-            className={cn(
-              'flex gap-4 flex-1 max-w-5xl w-full -translate-y-16',
-              'flex-col-reverse lg:flex-row',
-            )}
-          >
-            <div className="w-full lg:w-64 shrink-0">
-              <Aside />
-            </div>
-            <div className="flex-1">{children}</div>
-          </main>
-          <footer className="py-6 text-center text-gray-600">
-            © 2024 Congenial Memory. All rights reserved.
-          </footer>
-        </div>
-        <ScrollRestoration />
-        <Scripts />
+        <QueryClientProvider client={queryClient}>
+          <ConvexProvider client={convexClient}>{children}</ConvexProvider>
+          <ScrollRestoration />
+          <Scripts />
+          <Toaster />
+          <ReactQueryDevtools buttonPosition="bottom-left" />
+        </QueryClientProvider>
       </body>
     </html>
   );
 }
 
-export default function App() {
-  return <Outlet />;
+export default function App({ loaderData }: Route.ComponentProps) {
+  const location = useLocation();
+  const shouldShowAside = !(
+    location.pathname === '/new-post' ||
+    (matchPath({ path: '/archive/:postId', end: true }, location.pathname) &&
+      location.pathname !== '/archive/list')
+  );
+
+  return (
+    <ClerkProvider
+      publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY}
+      loaderData={loaderData}
+    >
+      <MainLayout aside={<Aside />} showAside={shouldShowAside}>
+        <Outlet />
+      </MainLayout>
+    </ClerkProvider>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
@@ -81,11 +120,11 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="pt-16 p-4 container mx-auto">
+    <main className="container mx-auto p-4 pt-16">
       <h1>{message}</h1>
       <p>{details}</p>
       {stack && (
-        <pre className="w-full p-4 overflow-x-auto">
+        <pre className="w-full overflow-x-auto p-4">
           <code>{stack}</code>
         </pre>
       )}

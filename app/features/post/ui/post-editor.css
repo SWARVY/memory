@@ -1,0 +1,16 @@
+.bn-editor {
+  --bn-colors-editor-background: transparent;
+}
+
+.bn-container[data-font-pretendard] .bn-editor * {
+  font-family: Pretendard, sans-serif;
+}
+
+.bn-container[data-font-pretendard] p {
+  font-size: 0.875rem;
+}
+
+.bn-container[data-font-pretendard] a {
+  font-size: 0.875rem;
+  text-decoration: underline;
+}
