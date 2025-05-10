@@ -25,8 +25,8 @@ export default function PostList() {
         })}
       >
         {({ data: { page, isDone, continueCursor } }) => (
-          <div className="flex size-full min-h-0 flex-col justify-between">
-            <ul className="space-y-4">
+          <div className="flex size-full flex-col justify-between">
+            <ul className="size-full space-y-4">
               {page.map((post) => (
                 <li key={`post-${post._id}`}>
                   <PostListItem post={post} />

@@ -26,8 +26,8 @@ export default function PostDetail({ postId }: PostDetailProps) {
   const [isEditing, setIsEditing] = useState(false);
 
   return (
-    <div className="relative flex size-full flex-col items-center justify-start">
-      <nav className="sticky top-10 left-10 z-10 flex h-12 w-full justify-start gap-x-2">
+    <div className="relative h-full w-full">
+      <nav className="sticky top-0 z-10 flex h-12 w-full justify-start gap-x-2 bg-white px-4">
         {isSignedIn && (
           <Button
             type="button"
@@ -45,65 +45,67 @@ export default function PostDetail({ postId }: PostDetailProps) {
           </Button>
         </Link>
       </nav>
-      <Suspense>
-        <SuspenseQuery
-          {...convexQuery(api.posts.getPostDetail, {
-            id: postId as Id<'post'>,
-          })}
-        >
-          {({ data }) => {
-            if (!data) {
-              return null;
-            }
+      <div className="h-[calc(100%-3rem)] overflow-y-auto px-4">
+        <Suspense>
+          <SuspenseQuery
+            {...convexQuery(api.posts.getPostDetail, {
+              id: postId as Id<'post'>,
+            })}
+          >
+            {({ data }) => {
+              if (!data) {
+                return null;
+              }
 
-            const { currentPost, previousPost, nextPost } = data;
+              const { currentPost, previousPost, nextPost } = data;
 
-            return !isEditing ? (
-              <div className="mt-20 flex w-full max-w-3xl flex-col gap-y-12">
-                <div className="space-y-4 text-center xl:px-20">
-                  <h1 className="text-center text-4xl font-semibold break-keep">
-                    {currentPost.title}
-                  </h1>
-                  <div className="flex w-full justify-center gap-x-2 text-center text-sm text-stone-500">
-                    <p>
-                      <time>{format(currentPost._creationTime, 'PPP')}</time>
-                      <span className="mx-1">·</span>
-                      {currentPost.category}
-                    </p>
+              return !isEditing ? (
+                <div className="mx-auto mt-20 flex max-w-3xl flex-col gap-y-12">
+                  <div className="space-y-4 text-center xl:px-20">
+                    <h1 className="text-center text-4xl font-semibold break-keep">
+                      {currentPost.title}
+                    </h1>
+                    <div className="flex w-full justify-center gap-x-2 text-center text-sm text-stone-500">
+                      <p>
+                        <time>{format(currentPost._creationTime, 'PPP')}</time>
+                        <span className="mx-1">·</span>
+                        {currentPost.category}
+                      </p>
+                    </div>
                   </div>
+                  <hr />
+                  {currentPost.contents && (
+                    <PostDetailContent contents={currentPost.contents} />
+                  )}
+                  <AdjacentPostLinks
+                    previousPost={previousPost}
+                    nextPost={nextPost}
+                  />
+                  <hr />
+                  <Giscus
+                    id="comments"
+                    repo="SWARVY/memory"
+                    repoId="R_kgDOOUWZGA"
+                    category="Announcements"
+                    categoryId="DIC_kwDOOUWZGM4Cp_tD"
+                    mapping="pathname"
+                    reactionsEnabled="1"
+                    emitMetadata="0"
+                    inputPosition="bottom"
+                    theme="catppuccin_latte"
+                    lang="en"
+                    loading="lazy"
+                  />
                 </div>
-                <hr />
-                {currentPost.contents && (
-                  <PostDetailContent contents={currentPost.contents} />
-                )}
-                <AdjacentPostLinks
-                  previousPost={previousPost}
-                  nextPost={nextPost}
-                />
-                <hr />
-                <Giscus
-                  id="comments"
-                  repo="SWARVY/memory"
-                  repoId="R_kgDOOUWZGA"
-                  category="Announcements"
-                  categoryId="DIC_kwDOOUWZGM4Cp_tD"
-                  mapping="pathname"
-                  reactionsEnabled="1"
-                  emitMetadata="0"
-                  inputPosition="bottom"
-                  theme="catppuccin_latte"
-                  lang="en"
-                  loading="lazy"
-                />
-              </div>
-            ) : (
-              <div className="w-full">
-                <PostWriter defaultValues={currentPost} />
-              </div>
-            );
-          }}
-        </SuspenseQuery>
-      </Suspense>
+              ) : (
+                <div className="w-full">
+                  <PostWriter defaultValues={currentPost} />
+                </div>
+              );
+            }}
+          </SuspenseQuery>
+        </Suspense>
+      </div>
     </div>
   );
 }

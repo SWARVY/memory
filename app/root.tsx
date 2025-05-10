@@ -70,7 +70,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="min-h-dvh w-full overflow-y-scroll">
+      <body>
         <QueryClientProvider client={queryClient}>
           <ConvexProvider client={convexClient}>{children}</ConvexProvider>
           <ScrollRestoration />

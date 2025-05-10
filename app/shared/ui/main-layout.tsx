@@ -13,15 +13,15 @@ export function MainLayout({
   showAside = true,
 }: MainLayoutProps) {
   return (
-    <div className="flex min-h-dvh w-full flex-col items-center justify-start p-3 xl:p-10">
+    <div className="min-h-screen w-full">
       <main
         className={cn(
-          'flex size-full max-w-5xl flex-1 grow gap-4',
-          'flex-col px-4 lg:flex-row',
+          'mx-auto flex min-h-screen max-w-5xl gap-4 p-3 xl:p-10',
+          'flex-col lg:flex-row',
         )}
       >
         {showAside && <div className="w-full shrink-0 lg:w-72">{aside}</div>}
-        <div className="min-h-full w-full flex-1 grow">{children}</div>
+        <div className="flex-1">{children}</div>
       </main>
     </div>
   );

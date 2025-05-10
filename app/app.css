@@ -10,6 +10,13 @@
 }
 
 html,
+body,
+#root {
+  height: 100vh; /* 100%에서 100vh로 변경 */
+  overflow-y: auto;
+}
+
+html,
 body {
   @apply bg-white dark:bg-stone-950;
 
