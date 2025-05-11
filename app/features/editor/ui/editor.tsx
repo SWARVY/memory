@@ -7,10 +7,10 @@ import { api } from 'convex/_generated/api';
 import { useMutation } from 'convex/react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
-import { useEditorStore } from '~/entities/editor';
+import { useEditorStore } from '~/features/editor';
 import { cn } from '~/shared/lib/utils';
 
-import './post-editor.css';
+import './editor.css';
 
 interface EditorProps {
   className?: string;
@@ -42,7 +42,6 @@ const DEFAULT_CONTENT: PartialBlock[] = [
   },
 ];
 
-// TODO: Viewer와 유사한 뷰로 변경하는게 맞지 않을까?
 export default function Editor({
   className,
   initialContent,

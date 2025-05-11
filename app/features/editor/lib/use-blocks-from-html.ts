@@ -1,6 +1,6 @@
 import type { Block } from '@blocknote/core';
 import { useEffect, useState } from 'react';
-import { useEditorStore } from '~/entities/editor';
+import { useEditorStore } from '~/features/editor';
 
 export default function useBlocksFromHTML(html: string) {
   const editor = useEditorStore((state) => state.editor);
