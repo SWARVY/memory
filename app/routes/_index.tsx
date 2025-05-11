@@ -1,4 +1,4 @@
-import { PostList } from '~/features/post';
+import { PostList } from '~/pages/post';
 
 import type { Route } from '../+types/root';
 

@@ -1,8 +1,8 @@
 import { redirect, useParams } from 'react-router';
-import { PostDetail } from '~/features/post';
+import { PostDetail } from '~/pages/post';
 import buildPath from '~/shared/lib/build-path';
 
-export default function ArchiveDetail() {
+export default function ArchiveDetailPage() {
   const { postId } = useParams();
 
   return postId ? (
