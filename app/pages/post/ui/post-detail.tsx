@@ -1,34 +1,37 @@
-import { useAuth } from '@clerk/clerk-react';
+import { SignedIn } from '@clerk/clerk-react';
 import { convexQuery } from '@convex-dev/react-query';
 import Giscus from '@giscus/react';
+import { ClientOnly } from '@suspensive/react';
 import { SuspenseQuery } from '@suspensive/react-query';
 import { api } from 'convex/_generated/api';
 import type { Id } from 'convex/_generated/dataModel';
 import { format } from 'date-fns';
 import { ChevronLeft, ChevronRight, SquarePen, X } from 'lucide-react';
-import { Suspense, useState } from 'react';
+import { Suspense, lazy, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
+import { useBlocksFromHTML } from '~/features/editor';
 import buildPath from '~/shared/lib/build-path';
 import { cn } from '~/shared/lib/utils';
 import { Button } from '~/shared/ui/button';
 
-import useBlocksFromHTML from '../lib/use-blocks-from-html';
 import type {
   AdjacentPostLinkProps,
   AdjacentPostLinksProps,
   PostDetailProps,
 } from '../model/props';
-import Editor from './post-editor';
-import PostWriter from './post-writer';
+import PostEditor from './post-editor';
+
+const Editor = lazy(() =>
+  import('~/features/editor').then((m) => ({ default: m.Editor })),
+);
 
 export default function PostDetail({ postId }: PostDetailProps) {
-  const { isSignedIn } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
 
   return (
     <div className="relative h-full w-full">
       <nav className="sticky top-0 z-10 flex h-12 w-full justify-start gap-x-2 bg-white px-4">
-        {isSignedIn && (
+        <SignedIn>
           <Button
             type="button"
             variant={isEditing ? 'destructive' : 'outline'}
@@ -38,7 +41,7 @@ export default function PostDetail({ postId }: PostDetailProps) {
           >
             {isEditing ? <X /> : <SquarePen />}
           </Button>
-        )}
+        </SignedIn>
         <Link to={buildPath('/archive/list')}>
           <Button type="button" variant="outline" className="rounded-full">
             ALL ARTICLES
@@ -99,7 +102,7 @@ export default function PostDetail({ postId }: PostDetailProps) {
                 </div>
               ) : (
                 <div className="w-full">
-                  <PostWriter defaultValues={currentPost} />
+                  <PostEditor defaultValues={currentPost} />
                 </div>
               );
             }}
@@ -113,7 +116,13 @@ export default function PostDetail({ postId }: PostDetailProps) {
 function PostDetailContent({ contents }: { contents: string }) {
   const blocks = useBlocksFromHTML(contents);
 
-  return <Editor initialContent={blocks} editable={false} />;
+  return (
+    <Suspense>
+      <ClientOnly>
+        <Editor initialContent={blocks} editable={false} />
+      </ClientOnly>
+    </Suspense>
+  );
 }
 
 function AdjacentPostLinks({ previousPost, nextPost }: AdjacentPostLinksProps) {

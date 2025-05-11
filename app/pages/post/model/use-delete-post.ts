@@ -5,23 +5,26 @@ import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
 import buildPath from '~/shared/lib/build-path';
 
-export default function useEditPost() {
+export default function useDeletePost() {
   const queryClient = useQueryClient();
-  const editPost = useConvexMutation(api.posts.editPost);
+  const deletePost = useConvexMutation(api.posts.deletePost);
   const navigate = useNavigate();
 
   return useMutation({
-    mutationKey: ['edit'],
-    mutationFn: editPost,
-    onSuccess: (_, variables) => {
-      toast.success('포스트가 수정되었어요 ✅');
+    mutationKey: ['delete-post'],
+    mutationFn: deletePost,
+    onSuccess: () => {
+      toast.success('포스트가 삭제되었어요 🗑️');
       queryClient.invalidateQueries({
-        queryKey: [api.posts.getPostDetail, { id: variables.input._id }],
+        predicate: (query) => query.queryKey[1] === 'posts:getPosts',
+      });
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[1] === 'posts:getPostDetail',
       });
       navigate(buildPath('/'));
     },
     onError: () => {
-      toast.error('포스트 수정에 실패했어요 😢');
+      toast.error('포스트 삭제에 실패했어요 😢');
     },
   });
 }

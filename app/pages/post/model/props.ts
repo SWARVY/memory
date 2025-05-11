@@ -1,7 +1,7 @@
-import type { Post, PostSummary } from 'convex/schema';
+import type { PostResponse, PostSummary } from 'convex/schema';
 
 export interface PostWriterProps {
-  defaultValues?: Post;
+  defaultValues?: PostResponse;
 }
 
 export interface PostDetailProps {

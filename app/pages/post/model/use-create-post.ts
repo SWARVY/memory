@@ -5,16 +5,16 @@ import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
 import buildPath from '~/shared/lib/build-path';
 
-export default function useDeletePost() {
+export default function useCreatePost() {
   const queryClient = useQueryClient();
-  const deletePost = useConvexMutation(api.posts.deletePost);
+  const createPost = useConvexMutation(api.posts.createPost);
   const navigate = useNavigate();
 
   return useMutation({
-    mutationKey: ['delete'],
-    mutationFn: deletePost,
+    mutationKey: ['create-post'],
+    mutationFn: createPost,
     onSuccess: () => {
-      toast.success('포스트가 삭제되었어요 🗑️');
+      toast.success('포스트가 등록되었어요 🚀');
       queryClient.invalidateQueries({
         predicate: (query) => query.queryKey[1] === 'posts:getPosts',
       });
@@ -24,7 +24,7 @@ export default function useDeletePost() {
       navigate(buildPath('/'));
     },
     onError: () => {
-      toast.error('포스트 삭제에 실패했어요 😢');
+      toast.error('포스트 등록에 실패했어요 😢');
     },
   });
 }
