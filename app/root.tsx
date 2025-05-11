@@ -36,7 +36,10 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export async function loader(args: Route.LoaderArgs) {
-  return rootAuthLoader(args);
+  return rootAuthLoader(args, {
+    secretKey: import.meta.env.VITE_CLERK_SECRET_KEY,
+    publishableKey: import.meta.env.VITE_CLERK_PUBLISHABLE_KEY,
+  });
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
