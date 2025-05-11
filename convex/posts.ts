@@ -2,10 +2,10 @@ import { zid } from 'convex-helpers/server/zod';
 import { z } from 'zod';
 import { zMutation, zQuery } from '~/shared/lib/zod-convex';
 
-import { PostSchema } from './schema';
+import { PostResponseSchema, PostSchema } from './schema';
 
 export const createPost = zMutation({
-  args: { input: PostSchema.omit({ _id: true, _creationTime: true }) },
+  args: { input: PostSchema },
   handler: async (ctx, args) => {
     const postId = await ctx.db.insert('post', args.input);
 
@@ -19,7 +19,7 @@ export const createPost = zMutation({
 });
 
 export const editPost = zMutation({
-  args: { input: PostSchema },
+  args: { input: PostResponseSchema },
   handler: async (ctx, args) => {
     ctx.db.patch(args.input._id!, args.input);
 
@@ -78,15 +78,12 @@ export const getPostDetail = zQuery({
       return null;
     }
 
-    // 모든 summary 데이터를 시간 순으로 가져오기
     const summaries = await ctx.db.query('summary').order('desc').collect();
 
-    // 현재 포스트의 인덱스 찾기
     const currentIndex = summaries.findIndex(
       (summary) => summary.postId === currentPost._id,
     );
 
-    // 이전, 다음 포스트 찾기
     const nextPost = currentIndex > 0 ? summaries[currentIndex - 1] : null;
     const previousPost =
       currentIndex < summaries.length - 1 ? summaries[currentIndex + 1] : null;

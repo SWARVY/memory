@@ -7,11 +7,9 @@ export const CategorySchema = z.enum(['TECH', 'THINKING', 'ETC']);
 export type Category = z.infer<typeof CategorySchema>;
 
 const BasePostSchema = z.object({
-  _id: zid('post').optional(),
-  _creationTime: z.number().optional(),
   title: z.string().min(1),
   category: CategorySchema,
-  briefContents: z.string().optional(),
+  briefContents: z.string(),
 });
 
 export const PostSummarySchema = BasePostSchema.extend({
@@ -20,15 +18,42 @@ export const PostSummarySchema = BasePostSchema.extend({
 
 export type PostSummary = z.infer<typeof PostSummarySchema>;
 
+export const PostSummaryResponseSchema = PostSummarySchema.extend({
+  _id: zid('summary'),
+  _creationTime: z.number(),
+});
+
+export type PostSummaryResponse = z.infer<typeof PostSummaryResponseSchema>;
+
 export const PostSchema = BasePostSchema.extend({
-  contents: z.string().optional(),
+  contents: z.string(),
 });
 
 export type Post = z.infer<typeof PostSchema>;
 
+export const PostResponseSchema = PostSchema.extend({
+  _id: zid('post'),
+  _creationTime: z.number(),
+});
+
+export type PostResponse = z.infer<typeof PostResponseSchema>;
+
 export const FileSchema = z.object({
   body: z.string(),
 });
+
+export const AboutSchema = z.object({
+  content: z.string().min(1),
+});
+
+export type About = z.infer<typeof AboutSchema>;
+
+export const AboutResponseSchema = AboutSchema.extend({
+  _id: zid('about'),
+  _creationTime: z.number(),
+});
+
+export type AboutResponse = z.infer<typeof AboutResponseSchema>;
 
 export default defineSchema({
   summary: defineTable(zodToConvex(PostSummarySchema)).index('by_postId', [
@@ -36,4 +61,5 @@ export default defineSchema({
   ]),
   post: defineTable(zodToConvex(PostSchema)),
   file: defineTable(zodToConvex(FileSchema)),
+  about: defineTable(zodToConvex(AboutSchema)),
 });
