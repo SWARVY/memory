@@ -13,12 +13,15 @@ export default function useEditPost() {
   return useMutation({
     mutationKey: ['edit-post'],
     mutationFn: editPost,
-    onSuccess: (_, variables) => {
-      toast.success('포스트가 수정되었어요 ✅');
-      queryClient.invalidateQueries({
-        queryKey: [api.posts.getPostDetail, { id: variables.input._id }],
-      });
+    onSuccess: () => {
       navigate(buildPath('/'));
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[1] === 'posts:getPosts',
+      });
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[1] === 'posts:getPostDetail',
+      });
+      toast.success('포스트가 수정되었어요 ✅');
     },
     onError: () => {
       toast.error('포스트 수정에 실패했어요 😢');

@@ -21,11 +21,16 @@ export const createPost = zMutation({
 export const editPost = zMutation({
   args: { input: PostResponseSchema },
   handler: async (ctx, args) => {
-    ctx.db.patch(args.input._id!, args.input);
+    await ctx.db.patch(args.input._id, {
+      title: args.input.title,
+      briefContents: args.input.briefContents,
+      category: args.input.category,
+      contents: args.input.contents,
+    });
 
     const summaries = await ctx.db
       .query('summary')
-      .withIndex('by_postId', (q) => q.eq('postId', args.input._id!))
+      .withIndex('by_postId', (q) => q.eq('postId', args.input._id))
       .collect();
 
     const summary = summaries[0];

@@ -9,6 +9,7 @@ import { Link } from 'react-router';
 import buildPath from '~/shared/lib/build-path';
 import { Button } from '~/shared/ui/button';
 
+import PostListSkeleton from './post-list-skeleton';
 import PostPagination from './post-pagination';
 
 interface PostItemProps {
@@ -17,7 +18,7 @@ interface PostItemProps {
 
 export default function PostList() {
   return (
-    <Suspense>
+    <Suspense fallback={<PostListSkeleton />}>
       <SuspenseQuery
         {...convexQuery(api.posts.getPosts, {
           cursor: null,

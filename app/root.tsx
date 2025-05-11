@@ -35,8 +35,6 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
-const HIDE_ASIDE_PATHS = ['/new-post', '/archive/:postId'] as const;
-
 export async function loader(args: Route.LoaderArgs) {
   return rootAuthLoader(args);
 }

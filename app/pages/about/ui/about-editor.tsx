@@ -24,7 +24,7 @@ export default function AboutEditor({
   const { mutateAsync: editAbout } = useEditAbout();
 
   const handleSave = async () => {
-    const content = await editor?.blocksToFullHTML(editor?.document);
+    const content = JSON.stringify(editor?.document);
 
     if (!content) {
       toast.error('소개글 저장에 실패했어요 😢 잠시 후 다시 시도해주세요');

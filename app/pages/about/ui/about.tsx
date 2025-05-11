@@ -5,7 +5,6 @@ import { SuspenseQuery } from '@suspensive/react-query';
 import { api } from 'convex/_generated/api';
 import { Plus, SquarePen } from 'lucide-react';
 import { Suspense, lazy, useState } from 'react';
-import { useBlocksFromHTML } from '~/features/editor';
 import { Button } from '~/shared/ui/button';
 
 import type { EmptyAboutProps } from '../model/props';
@@ -20,7 +19,9 @@ export default function About() {
 
   return (
     <div className="size-full">
-      <Suspense>
+      {isEditMode ? (
+        <AboutEditor onSave={() => setIsEditMode(false)} />
+      ) : (
         <SuspenseQuery {...convexQuery(api.about.getAbout, {})}>
           {({ data }) => {
             if (!data) {
@@ -28,12 +29,7 @@ export default function About() {
                 <EmptyAbout handleButtonClick={() => setIsEditMode(true)} />
               );
             }
-            return isEditMode ? (
-              <AboutEditor
-                defaultValue={data}
-                onSave={() => setIsEditMode(false)}
-              />
-            ) : (
+            return (
               <div className="flex w-full flex-col items-center justify-center gap-y-8">
                 <div className="flex w-full items-center justify-end">
                   <Button
@@ -50,13 +46,13 @@ export default function About() {
             );
           }}
         </SuspenseQuery>
-      </Suspense>
+      )}
     </div>
   );
 }
 
 function AboutContent({ content }: { content: string }) {
-  const blocks = useBlocksFromHTML(content);
+  const blocks = JSON.parse(content);
 
   return (
     <div className="w-full px-4">

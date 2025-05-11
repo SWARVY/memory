@@ -1,6 +1,6 @@
 import { ClientOnly } from '@suspensive/react';
 import { useForm } from '@tanstack/react-form';
-import { type Category, PostSchema } from 'convex/schema';
+import { type Category, type Post, PostSchema } from 'convex/schema';
 import { Cog, Lightbulb, PencilLine, Save, Trash } from 'lucide-react';
 import { Suspense, lazy } from 'react';
 import { toast } from 'sonner';
@@ -25,21 +25,23 @@ export default function PostWriter({ defaultValues }: PostWriterProps) {
   const { mutateAsync: deletePost } = useDeletePost();
 
   const isEditMode = !!defaultValues;
+  const blocks = defaultValues?.contents
+    ? JSON.parse(defaultValues.contents)
+    : [];
+
   const editor = useEditorStore((state) => state.editor);
   const form = useForm({
     defaultValues: defaultValues ?? {
       title: '',
       category: 'TECH',
+      briefContents: '',
+      contents: '',
     },
     validators: {
       onChange: PostSchema,
     },
-    onSubmit: async ({
-      value,
-    }: {
-      value: { title: string; category: Category };
-    }) => {
-      const contents = await editor?.blocksToFullHTML(editor?.document);
+    onSubmit: async ({ value }: { value: Post }) => {
+      const contents = JSON.stringify(editor?.document);
       const briefContents = editor?._tiptapEditor.getText();
 
       // FOR DEBUG
@@ -55,11 +57,10 @@ export default function PostWriter({ defaultValues }: PostWriterProps) {
       } else {
         await editPost({
           input: {
+            ...defaultValues,
             ...value,
             contents,
             briefContents,
-            _id: defaultValues._id,
-            _creationTime: defaultValues._creationTime,
           },
         });
       }
@@ -132,7 +133,7 @@ export default function PostWriter({ defaultValues }: PostWriterProps) {
         <Suspense>
           <ClientOnly>
             <div className="size-full min-h-96 pb-[3.375rem]">
-              <Editor />
+              <Editor initialContent={blocks} />
             </div>
           </ClientOnly>
         </Suspense>

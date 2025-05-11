@@ -9,7 +9,6 @@ import { format } from 'date-fns';
 import { ChevronLeft, ChevronRight, SquarePen, X } from 'lucide-react';
 import { Suspense, lazy, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { useBlocksFromHTML } from '~/features/editor';
 import buildPath from '~/shared/lib/build-path';
 import { cn } from '~/shared/lib/utils';
 import { Button } from '~/shared/ui/button';
@@ -48,7 +47,7 @@ export default function PostDetail({ postId }: PostDetailProps) {
           </Button>
         </Link>
       </nav>
-      <div className="h-[calc(100%-3rem)] overflow-y-auto px-4">
+      <div className="h-[calc(100%-3rem)] px-4">
         <Suspense>
           <SuspenseQuery
             {...convexQuery(api.posts.getPostDetail, {
@@ -114,7 +113,7 @@ export default function PostDetail({ postId }: PostDetailProps) {
 }
 
 function PostDetailContent({ contents }: { contents: string }) {
-  const blocks = useBlocksFromHTML(contents);
+  const blocks = JSON.parse(contents);
 
   return (
     <Suspense>
