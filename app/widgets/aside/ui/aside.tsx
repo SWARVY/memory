@@ -1,4 +1,9 @@
-import { SignInButton, SignOutButton, useAuth } from '@clerk/react-router';
+import {
+  SignInButton,
+  SignOutButton,
+  SignedIn,
+  SignedOut,
+} from '@clerk/react-router';
 import {
   ChevronRight,
   Github,
@@ -28,8 +33,6 @@ export default function Aside() {
 }
 
 function ProfileSection() {
-  const { isSignedIn } = useAuth();
-
   return (
     <article className="flex w-full flex-col justify-center space-y-4">
       <Link to={buildPath('/')}>
@@ -42,26 +45,25 @@ function ProfileSection() {
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">사용자 이름</h2>
           <div className="flex items-center gap-x-2">
-            {isSignedIn ? (
-              <>
-                <NavLink to={buildPath('/new-post')}>
-                  <Button variant="ghost" className="size-8 [&_svg]:size-12">
-                    <Pencil />
-                  </Button>
-                </NavLink>
-                <SignOutButton>
-                  <Button variant="ghost" className="size-8 [&_svg]:size-12">
-                    <LockOpen />
-                  </Button>
-                </SignOutButton>
-              </>
-            ) : (
+            <SignedIn>
+              <NavLink to={buildPath('/new-post')}>
+                <Button variant="ghost" className="size-8 [&_svg]:size-12">
+                  <Pencil />
+                </Button>
+              </NavLink>
+              <SignOutButton>
+                <Button variant="ghost" className="size-8 [&_svg]:size-12">
+                  <LockOpen />
+                </Button>
+              </SignOutButton>
+            </SignedIn>
+            <SignedOut>
               <SignInButton mode="modal">
                 <Button variant="ghost" className="size-8 [&_svg]:size-12">
                   <Lock />
                 </Button>
               </SignInButton>
-            )}
+            </SignedOut>
             <Button variant="ghost" className="size-8 [&_svg]:size-12">
               <Sun />
             </Button>

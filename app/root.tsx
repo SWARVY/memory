@@ -35,10 +35,11 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
-const HIDE_ASIDE_PATHS = ['/new-post', '/archive/:postId'] as const;
-
 export async function loader(args: Route.LoaderArgs) {
-  return rootAuthLoader(args);
+  return rootAuthLoader(args, {
+    secretKey: import.meta.env.VITE_CLERK_SECRET_KEY,
+    publishableKey: import.meta.env.VITE_CLERK_PUBLISHABLE_KEY,
+  });
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {

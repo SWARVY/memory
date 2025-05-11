@@ -11,17 +11,17 @@ export default function useDeletePost() {
   const navigate = useNavigate();
 
   return useMutation({
-    mutationKey: ['delete'],
+    mutationKey: ['delete-post'],
     mutationFn: deletePost,
     onSuccess: () => {
-      toast.success('포스트가 삭제되었어요 🗑️');
+      navigate(buildPath('/'));
       queryClient.invalidateQueries({
         predicate: (query) => query.queryKey[1] === 'posts:getPosts',
       });
       queryClient.invalidateQueries({
         predicate: (query) => query.queryKey[1] === 'posts:getPostDetail',
       });
-      navigate(buildPath('/'));
+      toast.success('포스트가 삭제되었어요 🗑️');
     },
     onError: () => {
       toast.error('포스트 삭제에 실패했어요 😢');

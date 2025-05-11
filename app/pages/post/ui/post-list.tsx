@@ -9,6 +9,7 @@ import { Link } from 'react-router';
 import buildPath from '~/shared/lib/build-path';
 import { Button } from '~/shared/ui/button';
 
+import PostListSkeleton from './post-list-skeleton';
 import PostPagination from './post-pagination';
 
 interface PostItemProps {
@@ -17,7 +18,7 @@ interface PostItemProps {
 
 export default function PostList() {
   return (
-    <Suspense>
+    <Suspense fallback={<PostListSkeleton />}>
       <SuspenseQuery
         {...convexQuery(api.posts.getPosts, {
           cursor: null,
@@ -25,8 +26,8 @@ export default function PostList() {
         })}
       >
         {({ data: { page, isDone, continueCursor } }) => (
-          <div className="flex size-full flex-col justify-between">
-            <ul className="size-full space-y-4">
+          <div className="flex h-full flex-col justify-between">
+            <ul className="space-y-4 pb-4">
               {page.map((post) => (
                 <li key={`post-${post._id}`}>
                   <PostListItem post={post} />
@@ -67,7 +68,7 @@ function PostListItem({ post }: PostItemProps) {
             <ChevronRight className="text-stone-500 opacity-0 transition-opacity group-hover:opacity-100" />
           </Link>
         </div>
-        <p className="text-sm text-stone-500">{briefContents}</p>
+        <p className="line-clamp-4 text-sm text-stone-500">{briefContents}</p>
       </div>
       <Link
         to={buildPath('/archive/:postId', { postId })}

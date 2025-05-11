@@ -1,9 +1,10 @@
 import { ClientOnly } from '@suspensive/react';
 import { useForm } from '@tanstack/react-form';
-import { type Category, PostSchema } from 'convex/schema';
+import { type Category, type Post, PostSchema } from 'convex/schema';
 import { Cog, Lightbulb, PencilLine, Save, Trash } from 'lucide-react';
 import { Suspense, lazy } from 'react';
-import { useEditorStore } from '~/entities/editor';
+import { toast } from 'sonner';
+import { useEditorStore } from '~/features/editor';
 import { cn } from '~/shared/lib/utils';
 import { Button } from '~/shared/ui/button';
 import { Input } from '~/shared/ui/input';
@@ -14,7 +15,9 @@ import useCreatePost from '../model/use-create-post';
 import useDeletePost from '../model/use-delete-post';
 import useEditPost from '../model/use-edit-post';
 
-const PostEditor = lazy(() => import('~/features/post/ui/post-editor'));
+const Editor = lazy(() =>
+  import('~/features/editor').then((m) => ({ default: m.Editor })),
+);
 
 export default function PostWriter({ defaultValues }: PostWriterProps) {
   const { mutateAsync: createPost } = useCreatePost();
@@ -22,31 +25,43 @@ export default function PostWriter({ defaultValues }: PostWriterProps) {
   const { mutateAsync: deletePost } = useDeletePost();
 
   const isEditMode = !!defaultValues;
+  const blocks = defaultValues?.contents
+    ? JSON.parse(defaultValues.contents)
+    : [];
+
   const editor = useEditorStore((state) => state.editor);
   const form = useForm({
     defaultValues: defaultValues ?? {
       title: '',
       category: 'TECH',
+      briefContents: '',
+      contents: '',
     },
     validators: {
       onChange: PostSchema,
     },
-    onSubmit: async ({
-      value,
-    }: {
-      value: { title: string; category: Category };
-    }) => {
-      const contents = await editor?.blocksToFullHTML(editor?.document);
+    onSubmit: async ({ value }: { value: Post }) => {
+      const contents = JSON.stringify(editor?.document);
       const briefContents = editor?._tiptapEditor.getText();
 
       // FOR DEBUG
       // console.log({ ...value, contents, briefContents });
 
+      if (!contents || !briefContents) {
+        toast.error('포스트 저장에 실패했어요 😢 잠시 후 다시 시도해주세요');
+        return;
+      }
+
       if (!isEditMode) {
         await createPost({ input: { ...value, contents, briefContents } });
       } else {
         await editPost({
-          input: { ...value, contents, briefContents, _id: defaultValues._id },
+          input: {
+            ...defaultValues,
+            ...value,
+            contents,
+            briefContents,
+          },
         });
       }
     },
@@ -118,7 +133,7 @@ export default function PostWriter({ defaultValues }: PostWriterProps) {
         <Suspense>
           <ClientOnly>
             <div className="size-full min-h-96 pb-[3.375rem]">
-              <PostEditor />
+              <Editor initialContent={blocks} />
             </div>
           </ClientOnly>
         </Suspense>

@@ -1,3 +1,5 @@
-export default function About() {
-  return <div>this is '/about'!</div>;
+import { About } from '~/pages/about';
+
+export default function AboutPage() {
+  return <About />;
 }

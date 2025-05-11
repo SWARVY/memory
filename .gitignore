@@ -9,4 +9,8 @@
 .yarn/unplugged
 .yarn/install-state.gz
 
+# Environment variables
 .env.local
+.env.production
+.env.test
+.env.development

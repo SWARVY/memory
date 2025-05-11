@@ -13,15 +13,15 @@ export function MainLayout({
   showAside = true,
 }: MainLayoutProps) {
   return (
-    <div className="min-h-screen w-full">
+    <div className="size-full min-h-screen">
       <main
         className={cn(
-          'mx-auto flex min-h-screen max-w-5xl gap-4 p-3 xl:p-10',
+          'mx-auto flex size-full min-h-screen max-w-5xl gap-4 p-3 xl:p-10',
           'flex-col lg:flex-row',
         )}
       >
         {showAside && <div className="w-full shrink-0 lg:w-72">{aside}</div>}
-        <div className="flex-1">{children}</div>
+        <div className="h-full flex-1">{children}</div>
       </main>
     </div>
   );

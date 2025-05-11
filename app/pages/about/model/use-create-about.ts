@@ -5,23 +5,23 @@ import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
 import buildPath from '~/shared/lib/build-path';
 
-export default function useEditPost() {
+export default function useCreateAbout() {
   const queryClient = useQueryClient();
-  const editPost = useConvexMutation(api.posts.editPost);
+  const createAbout = useConvexMutation(api.about.createAbout);
   const navigate = useNavigate();
 
   return useMutation({
-    mutationKey: ['edit'],
-    mutationFn: editPost,
-    onSuccess: (_, variables) => {
-      toast.success('포스트가 수정되었어요 ✅');
+    mutationKey: ['create-about'],
+    mutationFn: createAbout,
+    onSuccess: () => {
+      toast.success('소개글이 등록되었어요 🚀');
       queryClient.invalidateQueries({
-        queryKey: [api.posts.getPostDetail, { id: variables.input._id }],
+        predicate: (query) => query.queryKey[1] === 'about:getAbout',
       });
-      navigate(buildPath('/'));
+      navigate(buildPath('/about'));
     },
     onError: () => {
-      toast.error('포스트 수정에 실패했어요 😢');
+      toast.error('소개글 등록에 실패했어요 😢');
     },
   });
 }
