@@ -4,7 +4,7 @@ export const Routes = {
   ARCHIVE_LIST: '/archive/list',
   ARCHIVE_DETAIL: '/archive/:postId',
   ABOUT: '/about',
-  TEST: '/test',
+  SETTINGS: '/settings',
 } as const;
 
 export type Routes = (typeof Routes)[keyof typeof Routes];

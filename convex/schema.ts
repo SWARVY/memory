@@ -55,6 +55,21 @@ export const AboutResponseSchema = AboutSchema.extend({
 
 export type AboutResponse = z.infer<typeof AboutResponseSchema>;
 
+export const SettingsSchema = z.object({
+  profileImage: z.string().url().optional(),
+  name: z.string(),
+  description: z.string(),
+});
+
+export type Settings = z.infer<typeof SettingsSchema>;
+
+export const SettingsResponseSchema = SettingsSchema.extend({
+  _id: zid('settings'),
+  _creationTime: z.number(),
+});
+
+export type SettingsResponse = z.infer<typeof SettingsResponseSchema>;
+
 export default defineSchema({
   summary: defineTable(zodToConvex(PostSummarySchema)).index('by_postId', [
     'postId',
@@ -62,4 +77,5 @@ export default defineSchema({
   post: defineTable(zodToConvex(PostSchema)),
   file: defineTable(zodToConvex(FileSchema)),
   about: defineTable(zodToConvex(AboutSchema)),
+  settings: defineTable(zodToConvex(SettingsSchema)),
 });

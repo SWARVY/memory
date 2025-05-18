@@ -17,6 +17,7 @@ import type * as about from "../about.js";
 import type * as files from "../files.js";
 import type * as http from "../http.js";
 import type * as posts from "../posts.js";
+import type * as settings from "../settings.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -31,6 +32,7 @@ declare const fullApi: ApiFromModules<{
   files: typeof files;
   http: typeof http;
   posts: typeof posts;
+  settings: typeof settings;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
