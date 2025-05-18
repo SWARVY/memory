@@ -4,21 +4,25 @@ import {
   SignedIn,
   SignedOut,
 } from '@clerk/react-router';
-import {
-  ChevronRight,
-  Github,
-  Instagram,
-  Lock,
-  LockOpen,
-  Mail,
-  Pencil,
-  Sun,
-} from 'lucide-react';
+import { convexQuery } from '@convex-dev/react-query';
+import { SuspenseQuery } from '@suspensive/react-query';
+import { api } from 'convex/_generated/api';
+import { ChevronRight } from 'lucide-react';
+import { Suspense } from 'react';
 import { Link, NavLink } from 'react-router';
 import buildPath from '~/shared/lib/build-path';
 import { cn } from '~/shared/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '~/shared/ui/avatar';
 import { Button } from '~/shared/ui/button';
+import { DarkModeSwitcher } from '~/shared/ui/dark-mode-switcher';
+import {
+  AtSignIcon,
+  FingerprintIcon,
+  GithubIcon,
+  InstagramIcon,
+  LogoutIcon,
+} from '~/shared/ui/icon';
+import { Skeleton } from '~/shared/ui/skeleton';
 
 export default function Aside() {
   return (
@@ -35,42 +39,72 @@ export default function Aside() {
 function ProfileSection() {
   return (
     <article className="flex w-full flex-col justify-center space-y-4">
-      <Link to={buildPath('/')}>
-        <Avatar className="size-24">
-          <AvatarImage src="https://github.com/shadcn.png" />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
-      </Link>
-      <div className="space-y-2 text-sm text-stone-600">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">사용자 이름</h2>
-          <div className="flex items-center gap-x-2">
-            <SignedIn>
-              <NavLink to={buildPath('/new-post')}>
-                <Button variant="ghost" className="size-8 [&_svg]:size-12">
-                  <Pencil />
-                </Button>
-              </NavLink>
-              <SignOutButton>
-                <Button variant="ghost" className="size-8 [&_svg]:size-12">
-                  <LockOpen />
-                </Button>
-              </SignOutButton>
-            </SignedIn>
-            <SignedOut>
-              <SignInButton mode="modal">
-                <Button variant="ghost" className="size-8 [&_svg]:size-12">
-                  <Lock />
-                </Button>
-              </SignInButton>
-            </SignedOut>
-            <Button variant="ghost" className="size-8 [&_svg]:size-12">
-              <Sun />
-            </Button>
+      <Suspense
+        fallback={
+          <div className="space-y-4">
+            <Skeleton className="size-24 rounded-full" />
+            <div className="space-y-2">
+              <Skeleton className="h-7 w-full" />
+              <Skeleton className="h-5 w-full" />
+            </div>
           </div>
-        </div>
-        <p className="text-stone-500">소개글이 들어갈 자리입니다.</p>
-      </div>
+        }
+      >
+        <SuspenseQuery {...convexQuery(api.settings.getSettings, {})}>
+          {({ data }) => (
+            <>
+              <Link to={buildPath('/')}>
+                <Avatar className="size-24">
+                  <AvatarImage
+                    className="object-cover"
+                    src={data?.profileImage ?? 'https://github.com/shadcn.png'}
+                  />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+              </Link>
+              <div className="space-y-2 text-sm text-stone-600">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-semibold">
+                    {data?.name ?? '사용자 이름'}
+                  </h2>
+                  <div className="flex items-center gap-x-2">
+                    <SignedIn>
+                      <SignOutButton>
+                        <button
+                          className={cn(
+                            'inline-flex size-8 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none',
+                            'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
+                          )}
+                        >
+                          <LogoutIcon size={16} />
+                        </button>
+                      </SignOutButton>
+                    </SignedIn>
+                    <SignedOut>
+                      <SignInButton mode="modal">
+                        <button
+                          className={cn(
+                            'inline-flex size-8 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none',
+                            'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
+                          )}
+                        >
+                          <FingerprintIcon size={16} />
+                        </button>
+                      </SignInButton>
+                    </SignedOut>
+                    <DarkModeSwitcher />
+                  </div>
+                </div>
+                <p className="text-stone-500 dark:text-stone-300">
+                  {data?.description
+                    ? data.description
+                    : '소개글이 들어갈 자리입니다.'}
+                </p>
+              </div>
+            </>
+          )}
+        </SuspenseQuery>
+      </Suspense>
     </article>
   );
 }
@@ -81,14 +115,22 @@ function LinkSection() {
       <ul className="space-y-4">
         <AsideNavLink to={buildPath('/archive/list')} description="ARCHIVE" />
         <AsideNavLink to={buildPath('/about')} description="ABOUT" />
+        <SignedIn>
+          <hr />
+          <AsideNavLink to={buildPath('/new-post')} description="NEW POST" />
+          <AsideNavLink to={buildPath('/settings')} description="SETTINGS" />
+        </SignedIn>
       </ul>
       <div className="flex gap-2">
-        <AsideSnsLink icon={<Github />} href="https://github.com/SWARVY" />
+        <AsideSnsLink icon={<GithubIcon />} href="https://github.com/SWARVY" />
         <AsideSnsLink
-          icon={<Instagram />}
+          icon={<InstagramIcon />}
           href="https://www.instagram.com/caffhheine"
         />
-        <AsideSnsLink icon={<Mail />} href="mailto:swarvy0826@naver.com" />
+        <AsideSnsLink
+          icon={<AtSignIcon />}
+          href="mailto:swarvy0826@naver.com"
+        />
       </div>
     </div>
   );

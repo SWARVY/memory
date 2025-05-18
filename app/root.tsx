@@ -85,19 +85,27 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App({ loaderData }: Route.ComponentProps) {
-  const location = useLocation();
+  const { pathname } = useLocation();
+
   const shouldShowAside = !(
-    location.pathname === '/new-post' ||
-    (matchPath({ path: '/archive/:postId', end: true }, location.pathname) &&
-      location.pathname !== '/archive/list')
+    pathname === '/' ||
+    pathname === '/new-post' ||
+    (matchPath({ path: '/archive/:postId', end: true }, pathname) &&
+      pathname !== '/archive/list')
   );
+
+  const shouldRestrictArea = pathname !== '/';
 
   return (
     <ClerkProvider
       publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY}
       loaderData={loaderData}
     >
-      <MainLayout aside={<Aside />} showAside={shouldShowAside}>
+      <MainLayout
+        aside={<Aside />}
+        showAside={shouldShowAside}
+        shouldRestrictArea={shouldRestrictArea}
+      >
         <Outlet />
       </MainLayout>
     </ClerkProvider>
