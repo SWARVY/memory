@@ -1,0 +1,9 @@
+export { GithubIcon } from './github';
+export { InstagramIcon } from './instagram';
+export { AtSignIcon } from './at-sign';
+export { CompassIcon } from './compass';
+export { ArchiveIcon } from './archive';
+export { MoonIcon } from './moon';
+export { SunIcon } from './sun';
+export { LogoutIcon } from './logout';
+export { FingerprintIcon } from './finger-print';
