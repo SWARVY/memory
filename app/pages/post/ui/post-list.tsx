@@ -53,7 +53,7 @@ function PostListItem({ post }: PostItemProps) {
             <time>{format(_creationTime, 'PPP').toUpperCase()}</time>
             <Link
               to={buildPath('/')}
-              className="font-semibold transition-colors hover:text-stone-500"
+              className="font-semibold transition-colors hover:text-stone-500 dark:text-stone-300"
             >
               {category}
             </Link>
@@ -62,13 +62,15 @@ function PostListItem({ post }: PostItemProps) {
             to={buildPath('/archive/:postId', { postId })}
             className="group flex items-center gap-x-1"
           >
-            <h3 className="text-3xl font-bold transition-colors group-hover:text-stone-500">
+            <h3 className="text-3xl font-bold transition-colors group-hover:text-stone-500 dark:text-stone-300">
               {title}
             </h3>
-            <ChevronRight className="text-stone-500 opacity-0 transition-opacity group-hover:opacity-100" />
+            <ChevronRight className="text-stone-500 opacity-0 transition-opacity group-hover:opacity-100 dark:text-stone-300" />
           </Link>
         </div>
-        <p className="line-clamp-4 text-sm text-stone-500">{briefContents}</p>
+        <p className="line-clamp-4 text-sm text-stone-500 dark:text-stone-300">
+          {briefContents}
+        </p>
       </div>
       <Link
         to={buildPath('/archive/:postId', { postId })}
