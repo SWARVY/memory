@@ -1,73 +1,44 @@
 import { SignedIn, SignedOut } from '@clerk/clerk-react';
 import { convexQuery } from '@convex-dev/react-query';
-import { ClientOnly } from '@suspensive/react';
 import { SuspenseQuery } from '@suspensive/react-query';
 import { api } from 'convex/_generated/api';
-import { Plus, SquarePen } from 'lucide-react';
-import { Suspense, lazy, useState } from 'react';
+import { Plus } from 'lucide-react';
+import { useState } from 'react';
 import { Button } from '~/shared/ui/button';
 
 import type { EmptyAboutProps } from '../model/props';
 import AboutEditor from './about-editor';
-
-const Editor = lazy(() =>
-  import('~/features/editor').then((m) => ({ default: m.Editor })),
-);
 
 export default function About() {
   const [isEditMode, setIsEditMode] = useState(false);
 
   return (
     <div className="size-full">
-      {isEditMode ? (
-        <AboutEditor onSave={() => setIsEditMode(false)} />
-      ) : (
-        <SuspenseQuery {...convexQuery(api.about.getAbout, {})}>
-          {({ data }) => {
-            if (!data) {
-              return (
-                <EmptyAbout handleButtonClick={() => setIsEditMode(true)} />
-              );
-            }
-            return (
-              <div className="flex w-full flex-col items-center justify-center gap-y-8">
-                <div className="flex w-full items-center justify-end">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    onClick={() => setIsEditMode(true)}
-                  >
-                    <SquarePen />
-                  </Button>
-                </div>
-                <AboutContent content={data.content} />
-              </div>
-            );
-          }}
-        </SuspenseQuery>
-      )}
-    </div>
-  );
-}
+      <SuspenseQuery {...convexQuery(api.about.getAbout, {})}>
+        {({ data }) => {
+          if (!data) {
+            return <EmptyAbout handleButtonClick={() => setIsEditMode(true)} />;
+          }
 
-function AboutContent({ content }: { content: string }) {
-  const blocks = JSON.parse(content);
-
-  return (
-    <div className="w-full px-4">
-      <Suspense>
-        <ClientOnly>
-          <Editor initialContent={blocks} editable={false} />
-        </ClientOnly>
-      </Suspense>
+          return (
+            <div className="flex w-full flex-col items-center justify-center gap-y-8">
+              <AboutEditor
+                defaultValue={data}
+                onEdit={() => setIsEditMode(true)}
+                onSave={() => setIsEditMode(false)}
+                editable={isEditMode}
+              />
+            </div>
+          );
+        }}
+      </SuspenseQuery>
     </div>
   );
 }
 
 function EmptyAbout({ handleButtonClick }: EmptyAboutProps) {
   return (
-    <div className="flex flex-col items-center justify-center gap-y-4 py-32 text-center text-stone-500">
+    <div className="flex flex-col items-center justify-center gap-y-4 py-32 text-center text-stone-500 dark:text-stone-300">
       <SignedIn>
         <Button
           type="button"

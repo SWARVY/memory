@@ -1,24 +1,22 @@
-import { Save } from 'lucide-react';
-import { Suspense, lazy } from 'react';
+import { SignedIn } from '@clerk/clerk-react';
+import { Save, SquarePen } from 'lucide-react';
 import { toast } from 'sonner';
-import { useEditorStore } from '~/features/editor';
+import { Editor, useEditorStore } from '~/features/editor';
 import { Button } from '~/shared/ui/button';
 
 import type { AboutEditorProps } from '../model/props';
 import useCreateAbout from '../model/use-create-about';
 import useEditAbout from '../model/use-edit-about';
 
-const Editor = lazy(() =>
-  import('~/features/editor').then((m) => ({ default: m.Editor })),
-);
-
-// 수정
 export default function AboutEditor({
   defaultValue,
+  editable,
+  onEdit,
   onSave,
 }: AboutEditorProps) {
   const editor = useEditorStore((state) => state.editor);
   const isEditMode = !!defaultValue;
+  const blocks = JSON.parse(defaultValue?.content || '');
 
   const { mutateAsync: createAbout } = useCreateAbout();
   const { mutateAsync: editAbout } = useEditAbout();
@@ -47,20 +45,31 @@ export default function AboutEditor({
   };
 
   return (
-    <div className="flex w-full flex-col justify-center gap-y-8">
-      <div className="flex items-center justify-end">
-        <Button
-          type="button"
-          variant="outline"
-          size="icon"
-          onClick={handleSave}
-        >
-          <Save />
-        </Button>
-      </div>
-      <Suspense>
-        <Editor />
-      </Suspense>
+    <div className="flex w-full flex-col justify-center gap-y-8 py-6 pl-9">
+      <SignedIn>
+        <div className="flex w-full items-center justify-end">
+          {editable ? (
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={handleSave}
+            >
+              <Save />
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={onEdit}
+            >
+              <SquarePen />
+            </Button>
+          )}
+        </div>
+      </SignedIn>
+      <Editor initialContent={blocks} editable={editable} />
     </div>
   );
 }

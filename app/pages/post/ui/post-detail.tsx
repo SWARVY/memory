@@ -1,17 +1,18 @@
 import { SignedIn } from '@clerk/clerk-react';
 import { convexQuery } from '@convex-dev/react-query';
 import Giscus from '@giscus/react';
-import { ClientOnly } from '@suspensive/react';
 import { SuspenseQuery } from '@suspensive/react-query';
 import { api } from 'convex/_generated/api';
 import type { Id } from 'convex/_generated/dataModel';
 import { format } from 'date-fns';
 import { ChevronLeft, ChevronRight, SquarePen, X } from 'lucide-react';
-import { Suspense, lazy, useState } from 'react';
+import { Suspense, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
+import { Editor } from '~/features/editor';
 import buildPath from '~/shared/lib/build-path';
 import { cn } from '~/shared/lib/utils';
 import { Button } from '~/shared/ui/button';
+import { DarkModeSwitcher } from '~/shared/ui/dark-mode-switcher';
 
 import type {
   AdjacentPostLinkProps,
@@ -20,16 +21,12 @@ import type {
 } from '../model/props';
 import PostEditor from './post-editor';
 
-const Editor = lazy(() =>
-  import('~/features/editor').then((m) => ({ default: m.Editor })),
-);
-
 export default function PostDetail({ postId }: PostDetailProps) {
   const [isEditing, setIsEditing] = useState(false);
 
   return (
-    <div className="relative h-full w-full">
-      <nav className="sticky top-0 z-10 flex h-12 w-full justify-start gap-x-2 bg-white px-4">
+    <div className="relative size-full">
+      <nav className="sticky top-0 z-10 flex h-auto justify-start gap-x-2 bg-transparent p-4">
         <SignedIn>
           <Button
             type="button"
@@ -46,6 +43,7 @@ export default function PostDetail({ postId }: PostDetailProps) {
             ALL ARTICLES
           </Button>
         </Link>
+        <DarkModeSwitcher className="size-9 rounded-full border bg-white shadow-xs dark:bg-stone-900" />
       </nav>
       <div className="h-[calc(100%-3rem)] px-4">
         <Suspense>
@@ -60,6 +58,7 @@ export default function PostDetail({ postId }: PostDetailProps) {
               }
 
               const { currentPost, previousPost, nextPost } = data;
+              const blocks = JSON.parse(currentPost.contents);
 
               return !isEditing ? (
                 <div className="mx-auto mt-20 flex max-w-3xl flex-col gap-y-12">
@@ -67,7 +66,7 @@ export default function PostDetail({ postId }: PostDetailProps) {
                     <h1 className="text-center text-4xl font-semibold break-keep">
                       {currentPost.title}
                     </h1>
-                    <div className="flex w-full justify-center gap-x-2 text-center text-sm text-stone-500">
+                    <div className="flex w-full justify-center gap-x-2 text-center text-sm text-stone-500 dark:text-stone-300">
                       <p>
                         <time>{format(currentPost._creationTime, 'PPP')}</time>
                         <span className="mx-1">·</span>
@@ -76,9 +75,7 @@ export default function PostDetail({ postId }: PostDetailProps) {
                     </div>
                   </div>
                   <hr />
-                  {currentPost.contents && (
-                    <PostDetailContent contents={currentPost.contents} />
-                  )}
+                  <Editor initialContent={blocks} editable={false} />
                   <AdjacentPostLinks
                     previousPost={previousPost}
                     nextPost={nextPost}
@@ -109,18 +106,6 @@ export default function PostDetail({ postId }: PostDetailProps) {
         </Suspense>
       </div>
     </div>
-  );
-}
-
-function PostDetailContent({ contents }: { contents: string }) {
-  const blocks = JSON.parse(contents);
-
-  return (
-    <Suspense>
-      <ClientOnly>
-        <Editor initialContent={blocks} editable={false} />
-      </ClientOnly>
-    </Suspense>
   );
 }
 
@@ -156,7 +141,7 @@ function AdjacentPostLink({ type, postId, label }: AdjacentPostLinkProps) {
     <button
       type="button"
       className={cn(
-        'flex items-center gap-x-2 rounded-lg border px-4 py-3 text-sm text-stone-500 transition-colors [&_svg]:size-4',
+        'flex items-center gap-x-2 rounded-lg border px-4 py-3 text-sm text-stone-500 transition-colors dark:text-stone-300 [&_svg]:size-4',
         'hover:bg-stone-50 hover:text-stone-950',
         type === 'previous' ? 'justify-start' : 'justify-end',
         postId ? 'cursor-pointer' : 'cursor-not-allowed',

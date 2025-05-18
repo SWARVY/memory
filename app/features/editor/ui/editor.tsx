@@ -3,11 +3,13 @@ import '@blocknote/core/fonts/inter.css';
 import { BlockNoteView } from '@blocknote/mantine';
 import '@blocknote/mantine/style.css';
 import { useCreateBlockNote } from '@blocknote/react';
+import { ClientOnly } from '@suspensive/react';
 import { api } from 'convex/_generated/api';
 import { useMutation } from 'convex/react';
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { toast } from 'sonner';
 import { useEditorStore } from '~/features/editor';
+import useDarkMode from '~/shared/lib/use-dark-mode';
 import { cn } from '~/shared/lib/utils';
 
 import './editor.css';
@@ -16,6 +18,7 @@ interface EditorProps {
   className?: string;
   initialContent?: PartialBlock[];
   editable?: boolean;
+  isDarkMode?: boolean;
 }
 
 const convexSiteUrl = import.meta.env.VITE_CONVEX_SITE_URL;
@@ -42,10 +45,23 @@ const DEFAULT_CONTENT: PartialBlock[] = [
   },
 ];
 
-export default function Editor({
+function EditorLoader({ ...props }: EditorProps) {
+  const { isDarkMode } = useDarkMode();
+
+  return (
+    <Suspense>
+      <ClientOnly>
+        <EditorContent {...props} isDarkMode={isDarkMode} />
+      </ClientOnly>
+    </Suspense>
+  );
+}
+
+function EditorContent({
   className,
   initialContent,
   editable = true,
+  isDarkMode,
 }: EditorProps) {
   const { initialize } = useEditorStore();
   const generateUploadUrl = useMutation(api.files.generateUploadUrl);
@@ -91,8 +107,10 @@ export default function Editor({
       className={cn(className, !editable && 'size-full [&_.bn-editor]:!px-0')}
       editor={editor}
       editable={editable}
-      theme={'light'}
+      theme={isDarkMode ? 'dark' : 'light'}
       data-font-pretendard
     />
   );
 }
+
+export { EditorLoader as Editor };

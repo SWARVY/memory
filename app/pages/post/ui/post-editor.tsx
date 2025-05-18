@@ -1,10 +1,8 @@
-import { ClientOnly } from '@suspensive/react';
 import { useForm } from '@tanstack/react-form';
 import { type Category, type Post, PostSchema } from 'convex/schema';
 import { Cog, Lightbulb, PencilLine, Save, Trash } from 'lucide-react';
-import { Suspense, lazy } from 'react';
 import { toast } from 'sonner';
-import { useEditorStore } from '~/features/editor';
+import { Editor, useEditorStore } from '~/features/editor';
 import { cn } from '~/shared/lib/utils';
 import { Button } from '~/shared/ui/button';
 import { Input } from '~/shared/ui/input';
@@ -14,10 +12,6 @@ import type { PostWriterProps } from '../model/props';
 import useCreatePost from '../model/use-create-post';
 import useDeletePost from '../model/use-delete-post';
 import useEditPost from '../model/use-edit-post';
-
-const Editor = lazy(() =>
-  import('~/features/editor').then((m) => ({ default: m.Editor })),
-);
 
 export default function PostWriter({ defaultValues }: PostWriterProps) {
   const { mutateAsync: createPost } = useCreatePost();
@@ -130,13 +124,7 @@ export default function PostWriter({ defaultValues }: PostWriterProps) {
           />
         </div>
         <hr className="w-full" />
-        <Suspense>
-          <ClientOnly>
-            <div className="size-full min-h-96 pb-[3.375rem]">
-              <Editor initialContent={blocks} />
-            </div>
-          </ClientOnly>
-        </Suspense>
+        <Editor {...(blocks.length > 0 && { initialContent: blocks })} />
         <div className="fixed right-8 bottom-8 flex items-center gap-x-2">
           {/* 삭제 (수정 모드일 때만 가능) */}
           {isEditMode && (
