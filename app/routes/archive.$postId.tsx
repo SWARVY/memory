@@ -10,6 +10,6 @@ export default function ArchiveDetailPage() {
       <PostDetail postId={postId} />
     </div>
   ) : (
-    redirect(buildPath('/'))
+    redirect(buildPath('/archive/list'))
   );
 }
